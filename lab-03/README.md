@@ -1,10 +1,10 @@
-# Lab 3: REST API, Query Parameters, Validation, Debugging
+# Lab 3: REST API, Query Parameters, Validation, and Debugging
 
 ## Student Details
 
 - **Name:** NAMRATA
 - **Registration Number:** 252U1R5111
-- **Section:** Your Section
+- **Section:** AI/DE 2B S-011
 - **Course:** Backend Development Fundamentals
 - **Year:** II
 - **Term:** II
@@ -12,120 +12,152 @@
 
 ## Project Description
 
-This project demonstrates REST API development using Node.js, Express.js and SQLite.
+This project is a local REST API for managing books. It uses Express and an existing SQLite database to provide book CRUD operations, title search, sorting, pagination, price filtering, request validation, and JSON error responses.
 
-The API supports CRUD operations, searching books, sorting, pagination, price filtering and input validation. It also handles errors using appropriate HTTP status codes.
+The database file is `books.db` in this project folder. On startup, the app opens that database and creates the `book` table only if it does not already exist; it does not reset or reseed existing book records.
 
 ## Technologies Used
 
-- Node.js
-- Express.js
-- SQLite
-- Postman
-- JavaScript
+- JavaScript and Node.js
+- Express 5
+- SQLite (`sqlite` and `sqlite3`)
+- Postman for API requests
 
-## How to Run
+## Installation
 
-### 1. Open the Project
+1. Install Node.js and npm if they are not already installed.
+2. Open a terminal in the `lab-03` project folder.
+3. Install the project dependencies:
 
-Open the `lab-03` folder in VS Code.
+   ```bash
+   npm install
+   ```
 
-### 2. Install Dependencies
+Keep the existing `books.db` file in the project folder. The app expects it at that location.
 
-Open the terminal and run:
+## Environment Variables
 
-```bash
-npm install
+No environment variables are required for the default setup. `PORT` is optional and defaults to `3000`.
+
+To use a different port in PowerShell:
+
+```powershell
+$env:PORT=3001; npm start
 ```
 
-### 3. Start the Server
+## Starting the Server
+
+From the `lab-03` folder, run:
 
 ```bash
 npm start
 ```
 
-### 4. Server URL
-
-```text
-http://localhost:3000/
-```
-
-No environment variables are required if the project uses the default local configuration.
+The API is available at `http://localhost:3000`. Endpoints are under `/books`.
 
 ## API Endpoints
 
-| HTTP Method | Endpoint     | Description      |
-| ----------- | ------------ | ---------------- |
-| GET         | `/books`     | Get all books    |
-| GET         | `/books/:id` | Get a book by ID |
-| POST        | `/books`     | Add a new book   |
-| PUT         | `/books/:id` | Update a book    |
-| DELETE      | `/books/:id` | Delete a book    |
+| Method | Endpoint         | Description                                              | Success status |
+| ------ | ---------------- | -------------------------------------------------------- | -------------- |
+| GET    | `/books`         | Return books, optionally filtered, sorted, and paginated | 200            |
+| GET    | `/books/:bookId` | Return one book by its positive integer ID               | 200            |
+| POST   | `/books`         | Create a book                                            | 201            |
+| PUT    | `/books/:bookId` | Replace a book's title, author, price, and pages         | 200            |
+| DELETE | `/books/:bookId` | Delete a book                                            | 200            |
+
+POST and PUT expect a JSON object with non-empty `title` and `author`, and a non-negative `price`. `pages` is optional and, when provided, must be a non-negative whole number.
 
 ## Query Parameters
 
-| Parameter   | Description               |
-| ----------- | ------------------------- |
-| `search_q`  | Search books by title     |
-| `order_by`  | Sort using a column       |
-| `order`     | ASC or DESC               |
-| `limit`     | Maximum number of records |
-| `offset`    | Number of records to skip |
-| `min_price` | Minimum book price        |
-| `max_price` | Maximum book price        |
+The following parameters apply to `GET /books` and can be combined:
 
-### Example Requests
+| Parameter   | Description                      | Allowed values / default                       |
+| ----------- | -------------------------------- | ---------------------------------------------- |
+| `search_q`  | Match part of a book title       | Optional text; default is no search            |
+| `order_by`  | Column used to sort results      | `title`, `author`, or `price`; default `title` |
+| `order`     | Sort direction                   | `ASC` or `DESC`; default `ASC`                 |
+| `limit`     | Maximum number of returned books | Whole number from 1 to 1000; default `100`     |
+| `offset`    | Number of matching books to skip | Non-negative whole number; default `0`         |
+| `min_price` | Inclusive minimum price          | Optional non-negative number                   |
+| `max_price` | Inclusive maximum price          | Optional non-negative number                   |
 
-**Search:**
-
-```text
-GET /books?search_q=the
-```
-
-**Sorting:**
+Example:
 
 ```text
-GET /books?order_by=price&order=ASC
-```
-
-**Pagination:**
-
-```text
-GET /books?limit=5&offset=0
-```
-
-**Price Filtering:**
-
-```text
-GET /books?min_price=100&max_price=500
+GET /books?search_q=harry&order_by=price&order=ASC&limit=5&offset=0&min_price=100&max_price=500
 ```
 
 ## HTTP Status Codes
 
-| Status Code | Description                     |
-| ----------- | ------------------------------- |
-| 200         | OK – Request successful         |
-| 201         | Created – New book added        |
-| 400         | Bad Request – Invalid input     |
-| 404         | Not Found – Book does not exist |
-| 500         | Internal Server Error           |
+| Code | Meaning in this API                                   |
+| ---- | ----------------------------------------------------- |
+| 200  | Request succeeded (list/read/update/delete)           |
+| 201  | Book created                                          |
+| 400  | Invalid JSON, book input, book ID, or query parameter |
+| 404  | Book or endpoint not found                            |
+| 500  | Unexpected server error                               |
 
 ## Screenshots
 
-The Postman and VS Code screenshots for all 13 practical tests are included directly in the Lab 3 Word practical report.
+### 1. Server Running
+
+![Server Running](screenshots/01-server-running.png)
+
+### 2. GET All Books
+
+![GET All Books](screenshots/02-get-all-books.png)
+
+### 3. GET Book by ID
+
+![GET Book by ID](screenshots/03-get-book-by-id.png)
+
+### 4. POST Create Book
+
+![POST Create Book](screenshots/04-post-create-book.png)
+
+### 5. PUT Update Book
+
+![PUT Update Book](screenshots/05-put-update-book.png)
+
+### 6. DELETE Book
+
+![DELETE Book](screenshots/06-delete-book.png)
+
+### 7. Search Books
+
+![Search Books](screenshots/07-search-books.png)
+
+### 8. Sort Books
+
+![Sort Books](screenshots/08-sort-books.png)
+
+### 9. Pagination
+
+![Pagination](screenshots/09-pagination.png)
+
+### 10. Price Filter
+
+![Price Filter](screenshots/10-price-filter.png)
+
+### 11. Validation Error (400)
+
+![Validation Error (400)](screenshots/11-validation-400.png)
+
+### 12. Not Found (404)
+
+![Not Found (404)](screenshots/12-not-found-404.png)
+
+### 13. Combined Query
+
+![Combined Query](screenshots/13-combined-query.png)
 
 ## Problems Faced and Solutions
 
-1. **EADDRINUSE Error:** Occurs when port 3000 is already in use. Solved by stopping the existing server process or using another available port.
-
-2. **Import Error:** Occurs when the file path or module name is incorrect. Solved by checking the import path and file name.
-
-3. **No Such Table Error:** Occurs when the database table name is incorrect. Solved by checking the SQLite database table name.
-
-4. **Missing Await:** Occurs when asynchronous database operations are not awaited. Solved by using `await` with database operations.
-
-5. **Invalid Input:** Occurs when required book details are missing or incorrect. Solved by adding input validation and returning a 400 status code.
+- **Port already in use:** The server reports when the default port is occupied. Stop the other process or set `PORT` to an available port before starting the server.
+- **Database file not found:** Keep the provided `books.db` beside `app.js`; startup checks for the file and reports an error if it is missing.
+- **Invalid book or query input:** The API validates required fields, IDs, sorting options, pagination values, and prices, and returns a 400 response with an error message for invalid input.
+- **Book or route not found:** The API returns a 404 response when a requested book ID or endpoint does not exist.
 
 ## Conclusion
 
-The Lab 3 practical successfully demonstrates REST API development using Express.js and SQLite. It implements CRUD operations, query parameters, searching, sorting, pagination, price filtering and input validation with appropriate HTTP status codes.
+This practical demonstrates a working Express and SQLite books API with CRUD endpoints, query-based search and filtering, pagination, sorting, and input validation. The included screenshots document the local server and the 12 API request scenarios.
