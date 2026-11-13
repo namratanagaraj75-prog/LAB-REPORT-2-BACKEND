@@ -16,6 +16,10 @@ This project is a local REST API for managing books. It uses Express and an exis
 
 The database file is `books.db` in this project folder. On startup, the app opens that database and creates the `book` table only if it does not already exist; it does not reset or reseed existing book records.
 
+## Relationship to Lab 2
+
+Lab 3 extends the books API work from Lab 2 with search, sorting, pagination, price filters, and validation. It is kept as a separate runnable project with its own `app.js`, `package.json`, and `books.db`; it does not load files from `../lab-02/`. Keep `lab-02/` alongside this folder as the earlier reference implementation.
+
 ## Technologies Used
 
 - JavaScript and Node.js
